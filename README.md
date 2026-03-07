@@ -89,3 +89,31 @@ Phase 6 – Hardware prototype
 Lillys 
 SmartLeash Project – 2026
 
+
+## 📌 Flujo que debes seguir ahora
+
+1️⃣ Activar entorno
+
+.\venv310\Scripts\activate
+
+2️⃣ Ir a tu proyecto (si no estás ahí)
+
+cd C:\Users\rahel\Desktop\smartleash-app
+
+3️⃣ Ejecutar el loader del dataset
+
+python ai/training/dataset_loader.py
+
+## 🚀 Ahora sí: lo que sigue (ENTRENAR DE NUEVO)
+python ai/training/train_model.py
+
+
+## 🚀 Paso 1 — Verifica la ruta
+
+En tu código debe estar algo así:
+
+test_file = "ai/training/audioTest/test_vamonos2.wav"
+
+## 🚀 Paso 2 — Ejecuta el script
+python ai/training/predict.py
+

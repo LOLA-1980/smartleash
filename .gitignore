@@ -33,6 +33,8 @@ yarn-error.*
 # local env files
 .env*.local
 
+*.log
+
 # typescript
 *.tsbuildinfo
 
@@ -47,6 +49,11 @@ venv310/
 venv/
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+
+.ipynb_checkpoints
+
 node_modules/
 .expo/
 dist/
