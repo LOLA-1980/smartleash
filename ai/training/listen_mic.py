@@ -1,65 +1,101 @@
-import sounddevice as sd
+# LISTEN_MIC.PY
+
 import numpy as np
+import sounddevice as sd
 import librosa
 import tensorflow as tf
+import pickle
 
-
-# cargar modelo
+# ==========================
+# Cargar modelo y encoder
+# ==========================
 model = tf.keras.models.load_model("ai/training/smartleash_model.h5")
 
-classes = ["vamonos", "fea", "otro", "silencio"]
+with open("C:/Users/rahel/Desktop/smartleash-app/ai/training/label_encoder.pkl", "rb") as f:
+    le = pickle.load(f)
 
-samplerate = 16000
-duration = 1.5  # segundos
+# ==========================
+# Parámetros
+# ==========================
+SAMPLE_RATE = 16000
+DURATION = 1
+THRESHOLD_VOLUME = 3
+THRESHOLD_CONFIDENCE = 0.85
 
-print("🎤 Escuchando... di un comando")
+print("🎤 Escuchando... di un comando\n")
 
 while True:
 
-    audio = sd.rec(
-        int(duration * samplerate),
-        samplerate=samplerate,
-        channels=1,
-    )
-
+    audio = sd.rec(int(SAMPLE_RATE * DURATION),
+                   samplerate=SAMPLE_RATE,
+                   channels=1,
+                   dtype='float32')
     sd.wait()
+
+    audio = np.squeeze(audio)
 
     volume = np.linalg.norm(audio)
     print("Nivel de audio:", volume)
 
-    audio = audio.flatten()
+    if volume < THRESHOLD_VOLUME:
+        print("🔇 Muy bajo, ignorado\n---------------------")
+        continue
+
+    # ==========================
+    # MISMO PROCESAMIENTO QUE TRAIN
+    # ==========================
 
     audio = audio - np.mean(audio)
-    audio = audio / np.max(np.abs(audio))
 
-    # extraer MFCC
-    mfcc = librosa.feature.mfcc(
-    y=audio,
-    sr=samplerate,
-    n_mfcc=13
-)
+    if np.max(np.abs(audio)) > 0:
+        audio = audio / np.max(np.abs(audio))
 
-    # asegurar 32 frames
-    if mfcc.shape[1] < 32:
-        pad_width = 32 - mfcc.shape[1]
-        mfcc = np.pad(mfcc, pad_width=((0,0),(0,pad_width)))
+    audio, _ = librosa.effects.trim(audio, top_db=20)
+
+    max_len = 16000
+
+    if len(audio) > max_len:
+        audio = audio[:max_len]
     else:
-        mfcc = mfcc[:, :32]
+        audio = np.pad(audio, (0, max_len - len(audio)))
 
-    # añadir canal
-    mfcc = np.expand_dims(mfcc, axis=-1)
+    mel = librosa.feature.melspectrogram(
+        y=audio,
+        sr=16000,
+        n_mels=40
+    )
 
-    # añadir batch
-    mfcc = np.expand_dims(mfcc, axis=0)
+    mel = librosa.power_to_db(mel, ref=np.max)
+    mel = (mel - np.mean(mel)) / (np.std(mel) + 1e-6)
 
-    # predicción
-    prediction = model.predict(mfcc)
+    if mel.shape[1] < 64:
+        pad = 64 - mel.shape[1]
+        mel = np.pad(mel, ((0, 0), (0, pad)))
+    else:
+        mel = mel[:, :64]
 
+    mel = np.expand_dims(mel, axis=-1)
+    mel = np.expand_dims(mel, axis=0)
+
+    # ==========================
+    # Predicción
+    # ==========================
+
+    prediction = model.predict(mel, verbose=0)
     predicted_index = np.argmax(prediction)
-    predicted_class = classes[predicted_index]
+    confidence = prediction[0][predicted_index]
+    predicted_label = le.inverse_transform([predicted_index])[0]
 
-    print("Probabilidades:", prediction)
-    print("Predicción:", predicted_class)
+    print("Predicción:", predicted_label)
+    print("Confianza:", confidence)
+
+    # ==========================
+    # FILTRO FINAL
+    # ==========================
+
+    if predicted_label == "vamonos" and confidence > THRESHOLD_CONFIDENCE:
+        print("🐕 COMANDO DETECTADO: VÁMONOS 🔥")
+    else:
+        print("Ignorado")
+
     print("---------------------")
-
-    
