@@ -78,7 +78,7 @@ y_encoded = le.fit_transform(y)
 y_categorical = tf.keras.utils.to_categorical(y_encoded)
 
 # Guardar encoder
-with open("C:/Users/rahel/Desktop/smartleash-app/ai/training/label_encoder.pkl", "wb") as f:
+with open("C:/Users/rahel/Desktop/smartleash-app/models/label_encoder.pkl", "wb") as f:
     pickle.dump(le, f)
 
 print("Label encoder guardado correctamente")
@@ -124,6 +124,6 @@ model.fit(
 # ==========================
 # Guardar modelo
 # ==========================
-model.save("ai/training/smartleash_model.h5")
+model.save("models/smartleash_model.h5")
 
 print("Modelo entrenado y guardado correctamente")
