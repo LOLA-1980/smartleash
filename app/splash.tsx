@@ -1,33 +1,27 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import { useEffect, useRef } from "react";
-import {
-  Animated,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { Animated, StyleSheet, View } from "react-native";
 
 export default function Splash() {
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-  const scaleAnim = useRef(new Animated.Value(0.8)).current;
+  const opacity = useRef(new Animated.Value(0)).current;
+  const scale = useRef(new Animated.Value(0.95)).current;
 
   useEffect(() => {
-    // 🔥 animación combinada
     Animated.parallel([
-      Animated.timing(fadeAnim, {
+      Animated.timing(opacity, {
         toValue: 1,
-        duration: 1500,
+        duration: 1200,
         useNativeDriver: true,
       }),
-      Animated.spring(scaleAnim, {
+
+      Animated.spring(scale, {
         toValue: 1,
-        friction: 4,
+        friction: 6,
         useNativeDriver: true,
       }),
     ]).start();
 
-    // 🔐 verificar sesión
     const checkUser = async () => {
       const user = await AsyncStorage.getItem("user");
 
@@ -37,7 +31,7 @@ export default function Splash() {
         } else {
           router.replace("/login");
         }
-      }, 2200);
+      }, 2500);
     };
 
     checkUser();
@@ -45,22 +39,17 @@ export default function Splash() {
 
   return (
     <View style={styles.container}>
-      <Animated.View
-        style={{
-          opacity: fadeAnim,
-          transform: [{ scale: scaleAnim }],
-          alignItems: "center",
-        }}
-      >
-        {/* 🐶 LOGO */}
-        <Text style={styles.logo}>🐶</Text>
-
-        {/* APP NAME */}
-        <Text style={styles.title}>SmartLeash</Text>
-
-        {/* TAGLINE */}
-        <Text style={styles.subtitle}>Conectando contigo 💖</Text>
-      </Animated.View>
+      <Animated.Image
+        source={require("../assets/images/splash-bg.png")}
+        resizeMode="contain"
+        style={[
+          styles.image,
+          {
+            opacity,
+            transform: [{ scale }],
+          },
+        ]}
+      />
     </View>
   );
 }
@@ -68,26 +57,12 @@ export default function Splash() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#ff8fab",
+    backgroundColor: "#F9FAFB",
     justifyContent: "center",
     alignItems: "center",
   },
-
-  logo: {
-    fontSize: 60,
-    marginBottom: 10,
-  },
-
-  title: {
-    fontSize: 28,
-    fontWeight: "bold",
-    color: "white",
-  },
-
-  subtitle: {
-    marginTop: 5,
-    color: "white",
-    fontSize: 14,
-    opacity: 0.9,
+  image: {
+    width: "100%",
+    height: "100%",
   },
 });

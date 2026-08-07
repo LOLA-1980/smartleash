@@ -2,86 +2,139 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import { useState } from "react";
 import {
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Alert,
+  Image,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
 } from "react-native";
+import { theme } from "../styles/theme";
 
 export default function Login() {
   const [name, setName] = useState("");
 
-  const handleLogin = async () => {
+  const login = async () => {
     if (!name.trim()) {
-      alert("Escribe tu nombre 🐶");
+      Alert.alert("SmartLeash", "Escribe tu nombre 🐶");
       return;
     }
 
-    await AsyncStorage.setItem("user", JSON.stringify({ name }));
-    router.replace("/");
+    await AsyncStorage.setItem(
+      "user",
+      JSON.stringify({ name })
+    );
+
+    router.replace("/(tabs)");
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>🐶 SmartLeash</Text>
+    <SafeAreaView style={styles.container}>
+      <Image
+        source={require("../../assets/images/logo-smartleash.png")}
+        style={styles.logo}
+        resizeMode="contain"
+      />
+
+      <Text style={styles.title}>
+        SmartLeash
+      </Text>
 
       <Text style={styles.subtitle}>
-        Conecta con tus perritos 💖
+        Porque la comunicación siempre ha existido;
+        {"\n"}
+        SmartLeash la adapta a las nuevas necesidades de tu mejor amigo.
       </Text>
 
       <TextInput
         placeholder="Tu nombre"
+        placeholderTextColor="#9CA3AF"
         value={name}
         onChangeText={setName}
         style={styles.input}
       />
 
-      <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Entrar</Text>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={login}
+      >
+        <Text style={styles.buttonText}>
+          Entrar
+        </Text>
       </TouchableOpacity>
-    </View>
+
+      <TouchableOpacity
+        onPress={() => router.push("/(auth)/register")}
+      >
+        <Text style={styles.link}>
+          Crear una cuenta
+        </Text>
+      </TouchableOpacity>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: theme.colors.background,
     justifyContent: "center",
-    padding: 20,
-    backgroundColor: "#fbc2eb",
+    padding: theme.spacing.xl,
+  },
+
+  logo: {
+    width: 150,
+    height: 150,
+    alignSelf: "center",
+    marginBottom: theme.spacing.lg,
   },
 
   title: {
-    fontSize: 34,
-    fontWeight: "bold",
-    color: "white",
+    fontSize: theme.typography.logo.fontSize,
+    fontWeight: "700",
     textAlign: "center",
+    color: theme.colors.text,
+    marginBottom: theme.spacing.sm,
   },
 
   subtitle: {
+    fontSize: theme.typography.body.fontSize,
     textAlign: "center",
-    color: "white",
-    marginBottom: 30,
+    color: theme.colors.textSecondary,
+    marginBottom: theme.spacing.xl,
+    lineHeight: 22,
   },
 
   input: {
-    backgroundColor: "white",
-    padding: 14,
-    borderRadius: 14,
-    marginBottom: 15,
+    backgroundColor: theme.colors.surface,
+    padding: theme.spacing.md,
+    borderRadius: theme.radius.md,
+    fontSize: theme.typography.body.fontSize,
+    marginBottom: theme.spacing.md,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+    color: theme.colors.text,
   },
 
   button: {
-    backgroundColor: "#ff8fab",
-    padding: 15,
-    borderRadius: 15,
+    backgroundColor: theme.colors.primary,
+    padding: theme.spacing.md,
+    borderRadius: theme.radius.md,
+    alignItems: "center",
   },
 
   buttonText: {
-    color: "white",
+    color: theme.colors.white,
+    fontWeight: "700",
+    fontSize: theme.typography.body.fontSize,
+  },
+
+  link: {
+    marginTop: theme.spacing.lg,
     textAlign: "center",
-    fontWeight: "bold",
-    fontSize: 16,
+    color: theme.colors.primary,
+    fontWeight: "600",
+    fontSize: theme.typography.body.fontSize,
   },
 });
