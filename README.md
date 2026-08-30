@@ -375,41 +375,68 @@ SmartLeash está organizado en dos repositorios:
 ```text
 smartleash-app/
 │
-├── app/
-│   ├── (auth)/
-│   │   ├── login.tsx
-│   │   └── register.tsx
-│   │
-│   ├── (tabs)/
-│   │   ├── index.tsx
-│   │   ├── history.tsx
-│   │   └── connect.tsx
-│   │
-│   ├── dog/
-│   │   └── [dog].tsx
-│   │
-│   └── _layout.tsx
-│
 ├── ai/
+│   ├── dataset/
 │   └── training/
 │       ├── dataset_loader.py
 │       ├── train_model.py
 │       ├── predict.py
 │       └── audioTest/
 │
+├── ai_research/
+│
+├── app/
+│   ├── (auth)/
+│   ├── (tabs)/
+│   ├── contexts/
+│   ├── dog/
+│   ├── styles/
+│   ├── connect.tsx
+│   ├── history.tsx
+│   ├── index.tsx
+│   ├── modal.tsx
+│   ├── settings.tsx
+│   ├── splash.tsx
+│   ├── train.tsx
+│   └── _layout.tsx
+│
 ├── assets/
 │   └── images/
 │
 ├── components/
-├── contexts/
-├── constants/
-├── docs/
+│   └── ui/
 │
+├── constants/
+│   └── theme.ts
+│
+├── docs/
+│   └── flujo-completo-smartleash.png
+│
+├── hooks/
+│
+├── models/
+│
+├── scripts/
+│
+├── smartleash_engine/
+│   ├── ai/
+│   ├── communication/
+│   └── main.py
+│
+├── training/
+│
+├── .gitignore
 ├── app.json
+├── eslint.config.js
+├── expo-env.d.ts
+├── package-lock.json
 ├── package.json
+├── README.md
 ├── requirements.txt
-├── tsconfig.json
-└── README.md
+└── tsconfig.json
+```
+
+> El repositorio integra la aplicación móvil, los recursos visuales y los módulos experimentales de inteligencia artificial. El firmware del ESP32 se mantiene en un repositorio independiente.
 ```
 
 > Esta sección deberá ajustarse si los nombres reales de las carpetas del repositorio son diferentes.
