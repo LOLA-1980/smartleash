@@ -176,26 +176,24 @@ No se presentan métricas definitivas de precisión hasta completar una evaluaci
 ## 🔄 Arquitectura general
 
 ```mermaid
-flowchart TD
-    A["Persona"] --> B["Aplicación móvil"]
-
-    B --> C["Modo manual"]
-    B --> D["Modo por voz experimental"]
-
-    C --> E["Selección del comando"]
-    D --> F["Captura de audio"]
-    F --> G["Modelo de reconocimiento"]
-    G --> E
-
-    E --> H["Asignación del patrón háptico"]
-    H --> I["Bluetooth Low Energy"]
-    I --> J["ESP32"]
-    J --> K["Motor vibrador"]
-    K --> L["El perro recibe la señal"]
-    L --> M["Entrenamiento y asociación"]
+graph TD
+    A[Persona] --> B[Aplicación móvil]
+    B --> C[Modo manual]
+    B --> D[Modo por voz experimental]
+    C --> E[Selección del comando]
+    D --> F[Captura de audio]
+    F --> G[Modelo de reconocimiento]
+    G --> H[Identificación del comando]
+    E --> I[Asignación del patrón háptico]
+    H --> I
+    I --> J[Bluetooth Low Energy]
+    J --> K[ESP32]
+    K --> L[Motor vibrador]
+    L --> M[El perro recibe la señal]
+    M --> N[Entrenamiento y asociación]
 ```
 
-La integración completa entre la aplicación, BLE, ESP32 y motor permanece en revalidación.
+> La integración completa entre la aplicación, BLE, ESP32 y motor permanece en revalidación. El reconocimiento por voz cuenta con trabajo experimental de entrenamiento y predicción; su integración completa permanece pendiente.
 
 ---
 
