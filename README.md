@@ -311,16 +311,16 @@ flowchart TD
 
     C --> E["Selección del comando"]
     D --> F["Captura y reconocimiento"]
-    F --> G{"¿Voz autorizada y comando confiable?"}
+    F --> G{"Voz autorizada y comando confiable"}
 
-    G -- "No" --> H["No enviar comando"]
-    G -- "Sí" --> I["Comando y patrón asociado"]
+    G -->|No| H["No enviar comando"]
+    G -->|Si| I["Comando y patrón asociado"]
     E --> I
 
     I --> J["Transmisión BLE"]
-    J --> K{"¿Comando autorizado y válido?"}
-    K -- "No" --> L["No activar motor"]
-    K -- "Sí" --> M["ESP32 ejecuta el patrón"]
+    J --> K{"Comando autorizado y válido"}
+    K -->|No| L["No activar motor"]
+    K -->|Si| M["ESP32 ejecuta el patrón"]
     M --> N["El perro recibe la vibración"]
     N --> O["Asociación mediante entrenamiento"]
 ```
